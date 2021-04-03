@@ -1,0 +1,138 @@
+from random import randint
+letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+numbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+def encode():
+    #gain input
+    f = str(input("Enter a message to encode ")).lower()
+    fail = 0
+    for i in range(len(f)):
+        if f[i] not in letters and f[i] != " ":
+            fail = 1
+    while fail == 1:
+        f = str(input("Enter a message to encode without numbers or special characters ")).lower()
+        fail = 0
+        for i in range(len(f)):
+            if f[i] not in letters and f[i] != " ":
+                fail = 1
+    
+    #switches letters around
+    length = len(f)
+    doubleswitch = ""
+    for i in range(0, length, 2):
+        first = f[i]
+        try:
+            second = f[i+1]
+        except:
+            second = ""
+        doubleswitch = doubleswitch + second + first
+    f = doubleswitch
+
+    #turns letters to numbers
+    numbered = ""
+    for count in range(0, length):
+        char = f[count]
+        for i in range(0,26):
+            if char == " ":
+                append = "-"
+            if char == letters[i]:
+                append = str(i+3)+"%"
+            if char not in letters and char != " ":
+                append = char + "%"
+            if char == "x":
+                append = "0%"
+            if char == "y":
+                append = "1%"
+            if char == "z":
+                append = "2%"
+        numbered = numbered + append
+
+    #reverses code
+    length = len(numbered)
+    reverse = ""
+    for i in range(length-1, -1, -1):
+        reverse = reverse + str(numbered[i])
+
+    #inserts random letters between numbers
+    randomness = ""
+    for i in range(0, length):
+        randomness = randomness + reverse[i] + letters[randint(0,25)]
+    finanswer = randomness
+    print("")
+    print("The coded message is:", finanswer)
+
+
+
+
+def decode():
+    #gain input
+    f = str(input("Enter the message to decode ")).lower()
+
+    #un-reverses code
+    length = len(f)
+    correct = ""
+    for i in range(length-1, -1, -1):
+        correct = correct + str(f[i])
+
+    #un-noises code
+    clean = ""
+    character = ""
+    for i in range(0,length):
+        if correct[i] not in letters:
+            character = character + correct[i]
+        else:
+            clean = clean + character
+            character = ""
+    clean = clean + "%"
+
+    #turns numbers to letters
+    letterified = []
+    character = ""
+    length = len(clean)
+    for i in range(0,length):
+        if clean[i] == "-":
+            letterified.append(" ")
+        elif clean[i] != "%":
+            character = character + clean[i]
+        else:
+            if character == "0":
+                letterified.append("x")
+                character = ""
+            elif character == "1":
+                letterified.append("y")
+                character = ""
+            elif character == "2":
+                letterified.append("z")
+                character = ""
+            else:
+                character = letters[int(character)-3]
+                letterified.append(character)
+                character = ""
+
+    #combines and displays letters
+    length = len(letterified)
+    decoded = ""
+    for i in range(0,length):
+        decoded = decoded + letterified[i]
+    
+    #switches letters back around
+    length = len(decoded)
+    finanswer = ""
+    for i in range(0, length, 2):
+        first = decoded[i]
+        try:
+            second = decoded[i+1]
+        except:
+            second = ""
+        finanswer = finanswer + second + first
+    print(finanswer)
+
+#main program
+while True:
+    print("")
+    choice = str(input("Would you like to encode or decode a message? Enter e/d respectively "))
+    if choice == "e":
+        encode()
+    elif choice == "d":
+        decode()
+    else:
+        print("Invalid option")
